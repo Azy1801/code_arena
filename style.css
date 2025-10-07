@@ -1,0 +1,628 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --dark-bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --pink: #FF99D8;
+    --light-purple: #CEA8F0;
+    --light-blue: #89BBE4;
+    --mint-green: #99FFCE;
+    --border-color: #334155;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, 
+        rgba(255, 153, 216, 0.15) 0%, 
+        rgba(206, 168, 240, 0.15) 35%, 
+        rgba(137, 187, 228, 0.15) 70%, 
+        rgba(153, 255, 206, 0.15) 100%),
+        var(--dark-bg);
+    min-height: 100vh;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Header Styles - More Compact */
+.header {
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    height: 70px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--pink);
+}
+
+.logo i {
+    font-size: 1.8rem;
+}
+
+.header-center {
+    text-align: center;
+}
+
+.tagline {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.header-right {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.icon-btn {
+    padding: 0.6rem;
+    border: none;
+    border-radius: 50%;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 153, 216, 0.2);
+    transform: translateY(-2px);
+}
+
+.notification-badge {
+    background: var(--pink);
+    color: var(--dark-bg);
+    border-radius: 50%;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile:hover {
+    background: rgba(137, 187, 228, 0.2);
+}
+
+.profile-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.username {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+/* Navigation */
+.navigation {
+    background: rgba(30, 41, 59, 0.9);
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nav-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.nav-btn.active, .nav-btn:hover {
+    background: linear-gradient(45deg, var(--pink), var(--light-blue));
+    color: var(--dark-bg);
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1400px;
+    margin: 1.5rem auto;
+    padding: 0 2rem;
+    min-height: calc(100vh - 140px);
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Problems Layout */
+.problems-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1.5rem;
+    min-height: calc(100vh - 200px);
+}
+
+/* Problem Sidebar */
+.problem-sidebar {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.2rem;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    max-height: 600px;
+}
+
+.problem-sidebar h2 {
+    margin-bottom: 1.2rem;
+    color: var(--text-primary);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--pink);
+    font-size: 1.3rem;
+}
+
+.problem-item {
+    padding: 0.8rem;
+    margin-bottom: 0.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.problem-item:hover {
+    background: rgba(255, 153, 216, 0.1);
+    border-color: var(--pink);
+}
+
+.problem-item.active {
+    background: linear-gradient(45deg, rgba(255, 153, 216, 0.2), rgba(137, 187, 228, 0.2));
+    border-color: var(--light-blue);
+}
+
+.problem-title {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+
+.problem-number {
+    background: var(--light-blue);
+    color: var(--dark-bg);
+    padding: 0.2rem 0.6rem;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.problem-title h3 {
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.problem-meta {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.difficulty {
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.difficulty.easy {
+    background: rgba(153, 255, 206, 0.2);
+    color: var(--mint-green);
+}
+
+.acceptance {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Problem Content */
+.problem-content {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+}
+
+.problem-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.problem-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.problem-stats {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.problem-description h3 {
+    color: var(--light-blue);
+    margin: 1.2rem 0 0.4rem 0;
+    font-size: 1.1rem;
+}
+
+.problem-description p {
+    color: var(--text-secondary);
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.problem-description pre {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 0.8rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--pink);
+    margin: 0.8rem 0;
+    color: var(--text-primary);
+    overflow-x: auto;
+    font-size: 0.9rem;
+}
+
+/* Code Editor Section */
+.code-editor-section {
+    margin-top: 1.5rem;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+#language {
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+#code {
+    width: 100%;
+    height: 180px;
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.8rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    resize: vertical;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.run-btn, .sample-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.run-btn {
+    background: linear-gradient(45deg, var(--pink), var(--light-purple));
+    color: var(--dark-bg);
+}
+
+.sample-btn {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.run-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 216, 0.3);
+}
+
+/* Test Results */
+.test-results {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.test-results h3 {
+    margin-bottom: 0.8rem;
+    color: var(--light-blue);
+    font-size: 1.1rem;
+}
+
+.test-case {
+    padding: 0.8rem;
+    margin-bottom: 0.4rem;
+    border-radius: 5px;
+    border-left: 3px solid;
+    font-size: 0.9rem;
+}
+
+.test-case.passed {
+    background: rgba(153, 255, 206, 0.1);
+    border-left-color: var(--mint-green);
+}
+
+.test-case.failed {
+    background: rgba(255, 153, 216, 0.1);
+    border-left-color: var(--pink);
+}
+
+.execution-time {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+    text-align: right;
+}
+
+.leaderboard-btn {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(45deg, var(--light-blue), var(--mint-green));
+    color: var(--dark-bg);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.leaderboard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(137, 187, 228, 0.3);
+}
+
+/* Leaderboard Modal */
+.leaderboard-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 2px solid var(--light-blue);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    color: var(--light-blue);
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: var(--pink);
+}
+
+.leaderboard-table {
+    overflow-x: auto;
+}
+
+.leaderboard-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.leaderboard-table th {
+    background: rgba(137, 187, 228, 0.1);
+    color: var(--light-blue);
+    font-weight: 600;
+}
+
+.leaderboard-table tr:hover {
+    background: rgba(255, 153, 216, 0.05);
+}
+
+.leaderboard-table td:first-child {
+    font-weight: bold;
+    color: var(--pink);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .problems-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .problem-sidebar {
+        max-height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 0.6rem 1rem;
+        height: 60px;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    .logo i {
+        font-size: 1.5rem;
+    }
+    
+    .tagline {
+        display: none;
+    }
+    
+    .nav-container {
+        gap: 0.5rem;
+    }
+    
+    .nav-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .problems-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        padding: 1rem;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+/* Add to your existing CSS */
+.test-summary {
+    padding: 1rem;
+    background: rgba(153, 255, 206, 0.1);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--mint-green);
+}
+
+.submit-section {
+    padding: 1rem;
+    background: rgba(137, 187, 228, 0.1);
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+    border-left: 4px solid var(--light-blue);
+}
+
+.submit-btn {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(45deg, var(--pink), var(--light-purple));
+    color: var(--dark-bg);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 216, 0.3);
+}
+
+.error {
+    color: var(--pink);
+    padding: 1rem;
+    background: rgba(255, 153, 216, 0.1);
+    border-radius: 6px;
+    border-left: 4px solid var(--pink);
+}
