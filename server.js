@@ -1,93 +1,151 @@
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
+const axios = require('axios');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static('.'));
 
-// Judge0 Configuration
-const RAPIDAPI_KEY = "4aa9195f10msh53bb141b1f86d4bp14dba2jsnb543a8385a94";
+// Judge0 API configuration
+const JUDGE0_CONFIG = {
+  rapidApiKey: '4aa9195f10msh53bb141b1f86d4bp14dba2jsnb543a8385a94', // Replace with your RapidAPI key
+  rapidApiHost: 'judge0-ce.p.rapidapi.com',
+  baseUrl: 'https://judge0-ce.p.rapidapi.com'
+};
 
-// Test Cases
-const testCases = [
-    { input: "5 7", expected: "Sum = 12"},
-    { input: "-3 5", expected: "Sum = 2"},
-    { input: "0 0", expected: "Sum = 0"}
-];
+// Language IDs for Judge0
+const LANGUAGE_IDS = {
+  javascript: 63,
+  python: 71,
+  java: 62,
+  cpp: 54,
+  c: 50
+};
 
-// API Route
-app.post('/api/run', async (req, res) => {
-    try {
-        const { code, language } = req.body;
-        
-        const results = [];
-        for (const testCase of testCases) {
-            try {
-                const response = await axios.post(
-                    'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true',
-                    {
-                        language_id: language === 'c' ? 50 : 71,
-                        source_code: Buffer.from(code).toString('base64'),
-                        stdin: Buffer.from(testCase.input).toString('base64')
-                    },
-                    {
-                        headers: {
-                            'content-type': 'application/json',
-                            'X-RapidAPI-Key': RAPIDAPI_KEY,
-                            'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com'
-                        },
-                        timeout: 10000
-                    }
-                );
+// API route to submit code
+app.post('/api/submit', async (req, res) => {
+  try {
+    const { source_code, language, stdin } = req.body;
 
-                const output = response.data.stdout 
-                    ? Buffer.from(response.data.stdout, 'base64').toString()
-                    : null;
-
-                // Remove any trailing whitespace for comparison but keep the content
-                const cleanOutput = output ? output.trim() : null;
-                
-                results.push({
-                    input: testCase.input,
-                    expected: testCase.expected,
-                    output: output,
-                    passed: cleanOutput === testCase.expected,
-                    time: response.data.time
-                });
-            } catch (error) {
-                results.push({
-                    input: testCase.input,
-                    expected: testCase.expected,
-                    output: null,
-                    error: 'Execution failed',
-                    passed: false
-                });
-            }
+    const response = await axios.post(
+      `${JUDGE0_CONFIG.baseUrl}/submissions`,
+      {
+        source_code,
+        language_id: LANGUAGE_IDS[language] || LANGUAGE_IDS.javascript,
+        stdin: stdin || '',
+        expected_output: '8' // For the sum problem
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-RapidAPI-Key': JUDGE0_CONFIG.rapidApiKey,
+          'X-RapidAPI-Host': JUDGE0_CONFIG.rapidApiHost
         }
+      }
+    );
 
-        const passed = results.filter(test => test.passed).length;
-        const total = results.length;
-        const score = Math.round((passed / total) * 100);
-
-        res.json({ testResults: results, score, passed, total });
-
-    } catch (error) {
-        res.json({ error: 'Server error', details: error.message });
+    const token = response.data.token;
+    
+    // Poll for result
+    let result;
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    while (attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const statusResponse = await axios.get(
+        `${JUDGE0_CONFIG.baseUrl}/submissions/${token}`,
+        {
+          headers: {
+            'X-RapidAPI-Key': JUDGE0_CONFIG.rapidApiKey,
+            'X-RapidAPI-Host': JUDGE0_CONFIG.rapidApiHost
+          }
+        }
+      );
+      
+      result = statusResponse.data;
+      
+      if (result.status.id !== 1 && result.status.id !== 2) { // Not in queue or processing
+        break;
+      }
+      
+      attempts++;
     }
+
+    res.json({
+      success: true,
+      result: {
+        status: result.status.description,
+        output: result.stdout || result.stderr || result.compile_output,
+        time: result.time,
+        memory: result.memory
+      }
+    });
+    
+  } catch (error) {
+    console.error('Judge0 API error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to execute code'
+    });
+  }
 });
 
-// Serve frontend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// Mock problems data
+app.get('/api/problems', (req, res) => {
+  const problems = [
+    {
+      id: 1,
+      title: 'Sum of Two Numbers',
+      difficulty: 'Easy',
+      acceptance: '85%',
+      description: 'Write a program that takes two numbers as input and returns their sum.',
+      inputFormat: 'Two space-separated integers',
+      outputFormat: 'A string in the format "Sum = X" where X is the sum',
+      sampleInput: '5 3',
+      sampleOutput: 'Sum = 8',
+      options: [7, 8, 9, 10]
+    },
+    {
+      id: 2,
+      title: 'Reverse String',
+      difficulty: 'Easy',
+      acceptance: '78%',
+      description: 'Write a function that reverses a string.',
+      inputFormat: 'A string',
+      outputFormat: 'The reversed string',
+      sampleInput: 'hello',
+      sampleOutput: 'olleh',
+      options: ['olleh', 'hello', 'helol', 'oleh']
+    },
+    {
+      id: 3,
+      title: 'Fibonacci Sequence',
+      difficulty: 'Medium',
+      acceptance: '65%',
+      description: 'Generate the nth Fibonacci number.',
+      inputFormat: 'An integer n',
+      outputFormat: 'The nth Fibonacci number',
+      sampleInput: '5',
+      sampleOutput: '5',
+      options: [3, 5, 8, 13]
+    }
+  ];
+  
+  res.json({ success: true, problems });
 });
 
-// Start server
+// Serve the main page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(PORT, () => {
-    console.log('🚀 Server running at http://localhost:3000');
+  console.log(`Code Arena server running on http://localhost:${PORT}`);
 });
